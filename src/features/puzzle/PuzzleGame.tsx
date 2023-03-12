@@ -1,12 +1,16 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, Colors} from 'react-native-ui-lib';
 
-import {Image, Pressable, StyleSheet} from 'react-native';
+import {Image, Pressable, StyleSheet, Alert} from 'react-native';
 import {generateLetters} from '../../utils/game';
 import {Button} from '../../components';
 
 import _ from 'lodash';
 import {getWordsByCategory} from '../../api';
+import {updateScore} from '../../api/users';
+import {UserState, setScoreState} from '../../store/user';
+import {useDispatch, useSelector} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
 
 type SelectedCharacter = {
   value: string;
@@ -47,16 +51,19 @@ const LetterItem: React.FC<LetterItemProps> = ({
 };
 
 export const PuzzleGame = () => {
-  const [word, setWord] = useState<string[]>([]);
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const data = useSelector((state: {user: UserState}) => state.user);
+  const [nextWord, setNextWord] = useState<string[]>([]);
   const [words, setWords] = useState<string[]>([]);
   const [page, setPage] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
   const [selectedCharacters, setSelected] = useState<SelectedCharacter[]>([]);
 
   useEffect(() => {
     const wordList = getWordsByCategory('food');
     const letters = generateLetters(wordList[page]);
-    console.log('letters***', letters);
-    setWord(letters);
+    setNextWord(letters);
     setWords(wordList);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
@@ -85,11 +92,54 @@ export const PuzzleGame = () => {
     // submit result to the server
     if (page < 5) {
       const letters = generateLetters(words[page + 1]);
-      setWord(letters);
+      setNextWord(letters);
       setPage(page + 1);
+      setScore(score + words[page]?.length);
       clearSelected();
     }
-  }, [page, words, clearSelected]);
+  }, [page, words, score, clearSelected]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleSubmit = async () => {
+    // submit result to the server
+    try {
+      const id = data?.user?.id;
+      if (id) {
+        await updateScore(id, score);
+        dispatch(setScoreState(score));
+        navigation.goBack();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleFinish = useCallback(() => {
+    if (page < 4) {
+      // display allert confirmation to sumbit
+      Alert.alert(
+        "Haven't Copleted!",
+        "You haven't completed the all words!",
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              handleSubmit();
+            },
+          },
+          {
+            text: 'Cancel',
+            onPress: () => {},
+          },
+        ],
+        {cancelable: false},
+      );
+    } else {
+      handleSubmit();
+    }
+  }, [handleSubmit, page]);
+
+  console.log('render home');
 
   return (
     <View flex useSafeArea>
@@ -98,7 +148,7 @@ export const PuzzleGame = () => {
           <View marginT-30 centerH>
             <Text text60>Score</Text>
             <Text style={styles.score} text30>
-              1000
+              {score}
             </Text>
             <View centerH marginT-20>
               <Text text70>Words</Text>
@@ -106,7 +156,7 @@ export const PuzzleGame = () => {
             </View>
           </View>
           <View marginT-20 row centerH style={styles.word}>
-            {word.map((letter, index) => (
+            {nextWord.map((letter, index) => (
               <LetterItem
                 key={index}
                 letter={letter}
@@ -116,9 +166,12 @@ export const PuzzleGame = () => {
               />
             ))}
           </View>
+          <Text marginT-6 center text60>
+            Score: {words[page]?.length || 0}
+          </Text>
           <View marginT-10>
             <Text text70 center>
-              Tap on the letters to create a word
+              Tap on the letters to create a word - {words[page]}
             </Text>
           </View>
           <View style={styles.result} centerV marginT-40 paddingH-5 centerH>
@@ -138,7 +191,7 @@ export const PuzzleGame = () => {
           <Button
             label="Finish"
             background={Colors.green50}
-            onPress={() => {}}
+            onPress={handleFinish}
           />
           {page < 4 && <Button label="Next" onPress={handleNext} />}
         </View>

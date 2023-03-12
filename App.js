@@ -3,6 +3,9 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {Colors} from 'react-native-ui-lib';
 
+import {Provider} from 'react-redux';
+import store from './src/store';
+
 import Screens from './src/screens';
 
 Colors.loadColors({
@@ -18,7 +21,9 @@ Colors.loadColors({
 const App = () => {
   return (
     <NavigationContainer>
-      <Screens />
+      <Provider store={store}>
+        <Screens />
+      </Provider>
     </NavigationContainer>
   );
 };

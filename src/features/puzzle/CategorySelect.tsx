@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
 import {View, Text, Colors} from 'react-native-ui-lib';
 import {StyleSheet} from 'react-native';
 import {Button} from '../../components';
@@ -6,46 +6,27 @@ import {useNavigation, NavigationProp} from '@react-navigation/native';
 
 import {RootStackParamList} from '../../types';
 
-import {useSelector} from 'react-redux';
-import {UserState} from '../../store/user';
-
-export const Home: React.FC = () => {
-  const data = useSelector((state: {user: UserState}) => state.user);
+export const CategorySelect: React.FC = () => {
   const {navigate} = useNavigation<NavigationProp<RootStackParamList>>();
-  const handleShowLeaderBoard = useCallback(() => {
-    navigate('LeaderBoard');
+  const [category, selectCategory] = useState();
+  const gotoGame = useCallback(() => {
+    navigate('PuzzleGame');
   }, [navigate]);
-  const handleStartGame = useCallback(() => {
-    navigate('CategorySelect');
-  }, [navigate]);
-
   return (
     <View flex useSafeArea>
       <View flex-2>
         <View style={styles.top} flex>
           <View paddingH-20 paddingT-80 center>
             <Text center style={styles.title} text30>
-              Word Puzzle
+              Select a category
             </Text>
           </View>
           <View marginT-60 center>
-            <Text text50>{data?.user?.fullName}</Text>
-            <Text style={styles.score} text10>
-              {data?.user?.score}
-            </Text>
-            <Text style={styles.scoreTitle} text50>
-              Score
-            </Text>
-            <Button
-              textStyle={styles.linkBtn}
-              label="Show LeaderBoard"
-              onPress={handleShowLeaderBoard}
-              link
-            />
+            <Text>categoreis list goes here</Text>
           </View>
         </View>
         <View paddingH-20 style={styles.bottom} flex-1>
-          <Button label="Start" onPress={handleStartGame} />
+          <Button label="Select" onPress={gotoGame} />
         </View>
       </View>
     </View>

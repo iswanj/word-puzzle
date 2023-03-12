@@ -4,7 +4,7 @@ export const generateLetters = (word: string) => {
 
   // get random 3 letters from alphabet into a array of characters
   const randomLetters = Array.from({length: 2}, () =>
-    String.fromCharCode(Math.floor(Math.random() * 26) + 65),
+    String.fromCharCode(Math.floor(Math.random() * 26) + 97),
   );
 
   // merge randomLetters with letters

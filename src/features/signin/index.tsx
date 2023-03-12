@@ -5,6 +5,9 @@ import {useNavigation, NavigationProp} from '@react-navigation/native';
 
 import {RootStackParamList} from '../../types';
 
+import {useDispatch} from 'react-redux';
+import {setUser} from '../../store/user';
+
 import {
   KeyboardAvoidingView,
   Platform,
@@ -15,9 +18,13 @@ import {
 import {Input, Button} from '../../components';
 import {EMAIL_PATTERN} from '../../constants';
 
+import {signIn} from '../../api/users';
+
 export const SignIn: React.FC = () => {
   const {navigate} = useNavigation<NavigationProp<RootStackParamList>>();
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const [loginErr, setLoginError] = useState('');
   const {
     control,
     handleSubmit,
@@ -36,22 +43,29 @@ export const SignIn: React.FC = () => {
     email: string;
     password: string;
   }) => {
-    navigate('Home');
     console.log(email, password);
-    // try {
-    //   setLoading(true);
+    try {
+      setLoading(true);
 
-    //   const res = await signIn({email, password});
-    //   if (res.error) {
-    //     console.log(
-    //       'error: ',
-    //       res.message || 'Email or Password is incrorect, please try again.',
-    //     );
-    //   }
-    //   navigation.replace('Bootstrap');
-    // } catch (error) {
-    //   console.log('Sign in error: ', error);
-    // }
+      const res = await signIn({email, password});
+      if (res.error) {
+        setLoginError('Email or Password is incrorect, please try again.');
+        return;
+      }
+
+      if (!res.error) {
+        if (res.data) {
+          dispatch(setUser(res.data));
+        }
+        navigate('Home');
+        setLoginError('');
+        navigate('Home');
+      }
+    } catch (error) {
+      console.log('Sign in error: ', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleRegisterLink = useCallback(() => {
@@ -72,7 +86,10 @@ export const SignIn: React.FC = () => {
                 Sign In
               </Text>
             </View>
-            <View paddingT-40 paddingH-20>
+            <View paddingT-10 centerH>
+              <Text color={Colors.error}>{loginErr}</Text>
+            </View>
+            <View paddingT-30 paddingH-20>
               <View>
                 <Controller
                   control={control}
