@@ -22,8 +22,10 @@ if linkage != nil
 end
 
 target 'wordPuzzle' do
+  use_frameworks! :linkage => :static
   config = use_native_modules!
-
+  $RNFirebaseAsStaticFramework = true
+  
   # Flags change depending on the env values.
   flags = get_default_flags()
 
