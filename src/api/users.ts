@@ -69,7 +69,10 @@ export const getUser = async (id: string): Promise<User | undefined> => {
 
 export const getUsers = async (): Promise<User[]> => {
   try {
-    const users = await firestore().collection('users').get();
+    const users = await firestore()
+      .collection('users')
+      .orderBy('score', 'desc')
+      .get();
     let userData: User[] = [];
     users.forEach(item => {
       userData.push({
