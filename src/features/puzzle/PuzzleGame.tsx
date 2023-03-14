@@ -186,7 +186,7 @@ export const PuzzleGame: React.FC<GameScreenProps> = ({route}) => {
           </Text>
           <View marginT-10>
             <Text text70 center>
-              Tap on the letters to create a word - {words[page]}
+              Tap on the letters to create a word
             </Text>
           </View>
           <View style={styles.result} centerV marginT-40 paddingH-5 centerH>
@@ -194,6 +194,12 @@ export const PuzzleGame: React.FC<GameScreenProps> = ({route}) => {
               {selectedCharacters.map(item => item.value).join('')}
             </Text>
           </View>
+          <Text style={styles.correctWord} text60 center>
+            {words[page]}
+          </Text>
+          <Text text70 center>
+            Showing the word just for testing purpose
+          </Text>
           <View centerH marginT-6>
             {checkWord() ? (
               <Image source={require('../../assets/images/accept.png')} />
@@ -245,5 +251,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.green40,
     borderColor: Colors.green10,
     borderWidth: 1,
+  },
+  correctWord: {
+    textTransform: 'uppercase',
+    marginTop: 5,
   },
 });

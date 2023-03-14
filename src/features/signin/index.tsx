@@ -1,7 +1,6 @@
 import React, {useState, useCallback} from 'react';
 import {View, Text, LoaderScreen, Colors} from 'react-native-ui-lib';
 import {useForm, Controller} from 'react-hook-form';
-import {useNavigation, NavigationProp} from '@react-navigation/native';
 
 import {RootStackParamList} from '../../types';
 
@@ -19,9 +18,14 @@ import {Input, Button} from '../../components';
 import {EMAIL_PATTERN} from '../../constants';
 
 import {signIn} from '../../api/users';
+import {StackNavigationProp} from '@react-navigation/stack';
 
-export const SignIn: React.FC = () => {
-  const {navigate} = useNavigation<NavigationProp<RootStackParamList>>();
+interface SignInProps {
+  navigation: StackNavigationProp<RootStackParamList, 'SignIn'>;
+}
+
+export const SignIn = ({navigation}: SignInProps) => {
+  // const {navigate} = useNavigation<NavigationProp<RootStackParamList>>();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [loginErr, setLoginError] = useState('');
@@ -57,9 +61,8 @@ export const SignIn: React.FC = () => {
         if (res.data) {
           dispatch(setUser(res.data));
         }
-        navigate('Home');
+        navigation.replace('Home');
         setLoginError('');
-        navigate('Home');
       }
     } catch (error) {
       console.log('Sign in error: ', error);
@@ -69,8 +72,8 @@ export const SignIn: React.FC = () => {
   };
 
   const handleRegisterLink = useCallback(() => {
-    navigate('Register');
-  }, [navigate]);
+    navigation.navigate('Register');
+  }, [navigation]);
 
   return (
     <View flex useSafeArea>

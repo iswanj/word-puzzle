@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "652320969268",
+    "project_id": "puzzle-3f23e",
+    "storage_bucket": "puzzle-3f23e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:652320969268:android:c08019056e68418ae93061",
+        "android_client_info": {
+          "package_name": "com.wordpuzzle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "652320969268-70a6euu26qedo3g471f0i0455d8gslqe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBI6RQc2OJovDnftyQ27JqPR4VVnUOvD_I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "652320969268-70a6euu26qedo3g471f0i0455d8gslqe.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "652320969268-87fppdv3ehi4vec0qsggmm1c9g2ra7ej.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.interview.wordPuzzle"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
