@@ -16,7 +16,6 @@ export const Bootstrap = ({navigation}: BootstrapProps) => {
   const dispatch = useDispatch();
 
   const onAuthStateChanged = async (userData: any) => {
-    console.log('called onAuthStateChanged');
     if (userData === null) {
       navigation.replace('SignIn');
     } else {

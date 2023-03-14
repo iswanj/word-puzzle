@@ -47,7 +47,6 @@ export const SignIn = ({navigation}: SignInProps) => {
     email: string;
     password: string;
   }) => {
-    console.log(email, password);
     try {
       setLoading(true);
 

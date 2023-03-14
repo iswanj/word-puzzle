@@ -93,9 +93,6 @@ export const updateScore = async (
     const userRef = firestore().collection('users');
     const userObj = await userRef.doc(id).get();
     const userData = userObj.data();
-    console.log('id----', id);
-    console.log('score----', score);
-    console.log('userData----', userData);
 
     await firestore()
       .collection('users')

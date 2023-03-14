@@ -154,8 +154,6 @@ export const PuzzleGame: React.FC<GameScreenProps> = ({route}) => {
     }
   }, [handleSubmit, page]);
 
-  console.log('render home');
-
   return (
     <View flex useSafeArea>
       <View flex paddingH-20>
