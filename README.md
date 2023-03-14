@@ -14,6 +14,10 @@
 - User registration
 - Unit tests are not completed.
 
+#### Application UI flow 
+
+![Untitled Diagram](https://user-images.githubusercontent.com/7093947/225021572-8e031791-2d52-427b-916a-d1eae2b78aa5.jpg)
+
 ### Build and run a development version (android)
 
 To build and run the app for local development, simply run:
