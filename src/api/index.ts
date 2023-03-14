@@ -1,4 +1,4 @@
-export const CATEGORIES = {
+export const CATEGORIES: {[key: string]: string[]} = {
   animals: [
     'dog',
     'cat',
@@ -97,12 +97,15 @@ export const CATEGORIES = {
   ],
 };
 
-export const getWordsByCategory = category => {
+export const getWordsByCategory = (category: string): string[] => {
   // get random 5 items from array
+  if (!category) {
+    return [];
+  }
   const shuffled = CATEGORIES[category].sort(() => 0.5 - Math.random());
   return [...shuffled].slice(0, 5);
 };
 
-export const getCategories = () => {
+export const getCategories = (): string[] => {
   return Object.keys(CATEGORIES);
 };

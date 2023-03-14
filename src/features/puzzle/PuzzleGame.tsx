@@ -10,18 +10,29 @@ import {getWordsByCategory} from '../../api';
 import {updateScore} from '../../api/users';
 import {UserState, setScoreState} from '../../store/user';
 import {useDispatch, useSelector} from 'react-redux';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, RouteProp} from '@react-navigation/native';
+
+import {RootStackParamList} from '../../types';
 
 type SelectedCharacter = {
   value: string;
   index: number;
 };
 
+type GameScreenParam = {
+  selected: string;
+};
+
+type PuzzleScreenRouteProp = RouteProp<RootStackParamList, 'PuzzleGame'>;
 interface LetterItemProps {
   letter: string;
   index: number;
   handleLetterSelection: (letter: string, index: number) => void;
   selectedCharacters: SelectedCharacter[];
+}
+
+interface GameScreenProps {
+  route: PuzzleScreenRouteProp;
 }
 
 const LetterItem: React.FC<LetterItemProps> = ({
@@ -50,7 +61,7 @@ const LetterItem: React.FC<LetterItemProps> = ({
   );
 };
 
-export const PuzzleGame = () => {
+export const PuzzleGame: React.FC<GameScreenProps> = ({route}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const data = useSelector((state: {user: UserState}) => state.user);
@@ -59,14 +70,17 @@ export const PuzzleGame = () => {
   const [page, setPage] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
   const [selectedCharacters, setSelected] = useState<SelectedCharacter[]>([]);
+  const {selected} = route.params as GameScreenParam;
 
   useEffect(() => {
-    const wordList = getWordsByCategory('food');
-    const letters = generateLetters(wordList[page]);
-    setNextWord(letters);
-    setWords(wordList);
+    if (selected) {
+      const wordList = getWordsByCategory(selected);
+      const letters = generateLetters(wordList[page]);
+      setNextWord(letters);
+      setWords(wordList);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+  }, [page, selected]);
 
   const checkWord = useCallback(() => {
     const joinedWord = selectedCharacters.map(item => item.value).join('');
@@ -107,7 +121,8 @@ export const PuzzleGame = () => {
       if (id) {
         await updateScore(id, score);
         dispatch(setScoreState(score));
-        navigation.goBack();
+        // @ts-ignore
+        navigation.popToTop();
       }
     } catch (error) {
       console.log(error);

@@ -4,7 +4,7 @@ export type RootStackParamList = {
   Register: undefined;
   Home: undefined;
   CategorySelect: undefined;
-  PuzzleGame: undefined;
+  PuzzleGame: {selected: string};
   LeaderBoard: undefined;
 };
 

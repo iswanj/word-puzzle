@@ -67,6 +67,24 @@ export const getUser = async (id: string): Promise<User | undefined> => {
   }
 };
 
+export const getUsers = async (): Promise<User[]> => {
+  try {
+    const users = await firestore().collection('users').get();
+    let userData: User[] = [];
+    users.forEach(item => {
+      userData.push({
+        id: item.id,
+        email: item.data()?.email,
+        fullName: item.data()?.fullName,
+        score: item.data()?.score,
+      });
+    });
+    return userData;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 export const updateScore = async (
   id: string,
   score: number,

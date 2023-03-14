@@ -1,17 +1,50 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, Colors} from 'react-native-ui-lib';
-import {StyleSheet} from 'react-native';
+import {Pressable, StyleSheet} from 'react-native';
 import {Button} from '../../components';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
 
 import {RootStackParamList} from '../../types';
+import {getCategories} from '../../api';
+
+const CategoryItem = ({
+  item,
+  selected,
+  onPress,
+}: {
+  item: string;
+  selected: string;
+  onPress: (item: string) => void;
+}) => {
+  const handlePress = () => {
+    onPress(item);
+  };
+  return (
+    <Pressable
+      style={[styles.categoryBtn, selected === item && styles.selected]}
+      onPress={handlePress}>
+      <Text style={styles.categoryText} text60>
+        {item}
+      </Text>
+    </Pressable>
+  );
+};
 
 export const CategorySelect: React.FC = () => {
   const {navigate} = useNavigation<NavigationProp<RootStackParamList>>();
-  const [category, selectCategory] = useState();
+  const [categories, setCategories] = useState<string[]>([]);
+  const [selected, setSelected] = useState<string>('animals');
+  useEffect(() => {
+    const categoryList = getCategories();
+    setCategories(categoryList);
+  }, []);
   const gotoGame = useCallback(() => {
-    navigate('PuzzleGame');
-  }, [navigate]);
+    navigate('PuzzleGame', {selected});
+  }, [navigate, selected]);
+
+  const handleSelect = useCallback((category: string) => {
+    setSelected(category);
+  }, []);
   return (
     <View flex useSafeArea>
       <View flex-2>
@@ -21,12 +54,21 @@ export const CategorySelect: React.FC = () => {
               Select a category
             </Text>
           </View>
-          <View marginT-60 center>
-            <Text>categoreis list goes here</Text>
+          <View flex marginT-60 paddingH-20>
+            <View centerH row>
+              {categories.map((category: string) => (
+                <CategoryItem
+                  onPress={handleSelect}
+                  key={category}
+                  item={category}
+                  selected={selected}
+                />
+              ))}
+            </View>
           </View>
         </View>
         <View paddingH-20 style={styles.bottom} flex-1>
-          <Button label="Select" onPress={gotoGame} />
+          <Button label="Next" onPress={gotoGame} />
         </View>
       </View>
     </View>
@@ -53,5 +95,23 @@ const styles = StyleSheet.create({
   linkBtn: {
     textDecorationLine: 'underline',
     textTransform: 'capitalize',
+  },
+  categoryBtn: {
+    backgroundColor: Colors.green60,
+    borderWidth: 2,
+    borderColor: Colors.green60,
+    paddingHorizontal: 20,
+    paddingVertical: 18,
+    borderRadius: 1,
+    marginRight: 4,
+  },
+  categoryText: {
+    fontWeight: 'normal',
+    textTransform: 'capitalize',
+  },
+  selected: {
+    backgroundColor: Colors.green40,
+    borderWidth: 2,
+    borderColor: Colors.green20,
   },
 });
